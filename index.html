@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Events Hub - IIT Roorkee</title>
+    <style>
+        :root { --primary: #003366; --secondary: #f4b400; --bg: #f8f9fa; --text: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: var(--bg); color: var(--text); }
+        header { background: var(--primary); color: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+       .container { padding: 2rem; max-width: 1200px; margin: auto; }
+       .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+       .card { background: white; padding: 1.5rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: 0.3s; }
+       .card:hover { transform: translateY(-5px); }
+       .btn { background: var(--secondary); border: none; padding: 0.5rem 1rem; cursor: pointer; border-radius: 4px; font-weight: bold; }
+       .seat-map { display: grid; grid-template-columns: repeat(10, 30px); gap: 10px; justify-content: center; margin: 2rem 0; }
+       .seat { width: 30px; height: 30px; background: #ccc; border-radius: 4px; cursor: pointer; }
+       .seat.selected { background: var(--secondary); }
+       .seat.occupied { background: #444; cursor: not-allowed; }
+       .hidden { display: none; }
+        #login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; }
+    </style>
+</head>
+<body>
+    <header>
+        <div><strong>IIT Roorkee</strong> | Events Hub</div>
+        <nav id="nav-links" class="hidden"><button onclick="showScreen('dashboard')" class="btn">Dashboard</button></nav>
+    </header>
+
+    <div class="container" id="login-screen">
+        <h2>Student / Participant Login</h2>
+        <input type="email" placeholder="Institutional Email" style="padding: 0.5rem; width: 300px; margin-bottom: 1rem;">
+        <button onclick="showScreen('dashboard')" class="btn">Login</button>
+    </div>
+
+    <div class="container hidden" id="dashboard">
+        <h1>Upcoming Festivals</h1>
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Thomso '25</h3>
+                <p>Cultural Extravaganza with 150+ events like Vogue and Footloose.</p>
+                <button onclick="viewEvent('Thomso')" class="btn">Explore Events</button>
+            </div>
+            <div class="card">
+                <h3>Sangram '25</h3>
+                <p>National Sports Fest featuring 14+ disciplines at Dhyan Chand Stadium.</p>
+                <button onclick="viewEvent('Sangram')" class="btn">View Sports</button>
+            </div>
+            <div class="card">
+                <h3>COMET '26</h3>
+                <p>Career Odyssey: Workshops in Software Dev and Financial Markets.</p>
+                <button onclick="viewEvent('Comet')" class="btn">Register Workshops</button>
+            </div>
+            <div class="card">
+                <h3>Exuberance '26</h3>
+                <p>DoMS Intra-departmental sports for juniors, seniors, and alumni.</p>
+                <button onclick="viewEvent('Exuberance')" class="btn">Department Portal</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container hidden" id="event-view">
+        <h2 id="event-title"></h2>
+        <p id="event-desc"></p>
+        <div id="booking-section">
+            <h3>Venue: <span id="venue-name"></span></h3>
+            <p>Select your seat. Current Vacancy: <span id="vacancy-count"></span>%</p>
+            <div class="seat-map" id="seat-container"></div>
+            <button class="btn" onclick="alert('RSVP Confirmed!')">Confirm Registration</button>
+        </div>
+    </div>
+
+    <script>
+        const venues = { 'Thomso': 'Convocation Hall', 'Sangram': 'Dhyan Chand Stadium', 'Comet': 'Lecture Hall Complex (LHC)', 'Exuberance': 'DoMS Courts' };
+        const capacities = { 'Convocation Hall': 1827, 'MAC Auditorium': 400, 'LHC': 4480, 'Dhyan Chand Stadium': 16200 };
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
+            document.getElementById(screenId).classList.remove('hidden');
+            document.getElementById('nav-links').classList.toggle('hidden', screenId === 'login-screen');
+        }
+
+        function viewEvent(name) {
+            showScreen('event-view');
+            document.getElementById('event-title').innerText = name;
+            const venue = venues[name];
+            document.getElementById('venue-name').innerText = venue;
+            renderSeats(venue);
+        }
+
+        function renderSeats(venue) {
+            const container = document.getElementById('seat-container');
+            container.innerHTML = '';
+            for (let i = 0; i < 40; i++) {
+                const seat = document.createElement('div');
+                seat.className = 'seat' + (Math.random() > 0.8? ' occupied' : '');
+                seat.onclick = () => { if(!seat.classList.contains('occupied')) { seat.classList.toggle('selected'); updateVacancy(venue); } };
+                container.appendChild(seat);
+            }
+            updateVacancy(venue);
+        }
+
+        function updateVacancy(venue) {
+            const total = 40;
+            const selected = document.querySelectorAll('.seat.selected').length;
+            const occupied = document.querySelectorAll('.seat.occupied').length;
+            const vacancy = ((total - (selected + occupied)) / total * 100).toFixed(1);
+            document.getElementById('vacancy-count').innerText = vacancy;
+        }
+    </script>
+</body>
+</html>
