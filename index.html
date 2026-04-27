@@ -1,246 +1,492 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campus Events Hub | IIT Roorkee</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
-            --primary: #f4b400; /* IITR Gold */
-            --accent-blue: #38bdf8;
-            --accent-purple: #818cf8;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --success: #22c55e;
-            --danger: #ef4444;
-        }
-
-        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); margin: 0; overflow-x: hidden; }
-
-        /* Navigation */
-        nav { 
-            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px);
-            padding: 1rem 5%; display: flex; justify-content: space-between; 
-            align-items: center; border-bottom: 1px solid #334155;
-            position: sticky; top: 0; z-index: 100;
-        }
-       .logo { font-weight: 800; font-size: 1.5rem; color: var(--primary); letter-spacing: -1px; }
-       .nav-btn { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer; transition: 0.3s; }
-       .nav-btn:hover { background: var(--primary); color: var(--bg-dark); }
-
-        /* Main Container */
-       .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
-
-        /* Login Screen */
-        #login-screen { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-       .login-card { background: var(--card-bg); padding: 3rem; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
-       .input-group { text-align: left; margin-bottom: 1.5rem; }
-       .input-group label { display: block; margin-bottom: 0.5rem; color: var(--text-dim); font-size: 0.9rem; }
-        input { width: 100%; padding: 0.8rem; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; }
-
-        /* Dashboard */
-       .header-section { margin-bottom: 3rem; }
-       .header-section h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-       .header-section p { color: var(--text-dim); }
-
-       .event-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; }
-       .event-card { 
-            background: var(--card-bg); border-radius: 12px; border: 1px solid #334155; 
-            overflow: hidden; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer; position: relative;
-        }
-       .event-card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 10px 30px rgba(244, 180, 0, 0.1); }
-       .card-img { height: 160px; background: linear-gradient(45deg, #1e293b, #334155); display: flex; align-items: center; justify-content: center; font-size: 3rem; }
-       .card-content { padding: 1.5rem; }
-       .tag { font-size: 0.7rem; text-transform: uppercase; font-weight: 800; color: var(--primary); margin-bottom: 0.5rem; display: inline-block; }
-       .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
-       .card-meta { display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-dim); margin-top: 1rem; }
-       .vacancy-badge { background: rgba(34, 197, 94, 0.1); color: var(--success); padding: 0.2rem 0.6rem; border-radius: 4px; font-weight: 600; }
-
-        /* Event View & Seating */
-       .back-btn { margin-bottom: 1.5rem; display: inline-block; cursor: pointer; color: var(--accent-blue); }
-       .details-layout { display: grid; grid-template-columns: 1fr 350px; gap: 3rem; }
-       .seat-section { background: var(--card-bg); padding: 2rem; border-radius: 12px; border: 1px solid #334155; }
-       .seat-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; margin: 2rem 0; }
-       .seat { aspect-ratio: 1; background: #334155; border-radius: 4px; cursor: pointer; transition: 0.2s; }
-       .seat.available:hover { background: #475569; transform: scale(1.1); }
-       .seat.selected { background: var(--primary); box-shadow: 0 0 15px var(--primary); }
-       .seat.occupied { background: #0f172a; cursor: not-allowed; opacity: 0.3; }
-       .legend { display: flex; gap: 1.5rem; font-size: 0.8rem; color: var(--text-dim); justify-content: center; }
-       .legend-item { display: flex; align-items: center; gap: 0.5rem; }
-       .dot { width: 12px; height: 12px; border-radius: 2px; }
-
-       .btn-primary { 
-            width: 100%; padding: 1rem; background: var(--primary); color: var(--bg-dark); 
-            border: none; border-radius: 8px; font-weight: 700; cursor: pointer; 
-            margin-top: 1rem; transition: 0.3s;
-        }
-       .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
-
-       .hidden { display: none; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Events Hub | IIT Roorkee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { background: radial-gradient(circle at top, #eff6ff 0%, #f8fafc 35%, #eef2ff 100%); }
+    .glass { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+    .card { transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 18px 50px rgba(15,23,42,.10); }
+    .screen { display: none; }
+    .screen.active { display: block; }
+    .navbtn.active { background: #0f172a; color: white; }
+    .chip.active { background: #0f172a; color: white; }
+  </style>
 </head>
-<body>
-
-    <nav>
-        <div class="logo">IITR EVENTS</div>
-        <div id="nav-actions" class="hidden">
-            <button class="nav-btn" onclick="showScreen('dashboard')">All Events</button>
-            <button class="nav-btn" style="margin-left:1rem" onclick="location.reload()">Logout</button>
-        </div>
-    </nav>
-
-    <div class="container" id="login-screen">
-        <div class="login-card">
-            <div class="logo" style="margin-bottom: 2rem; font-size: 2rem;">Welcome</div>
-            <div class="input-group">
-                <label>IITR Email ID</label>
-                <input type="email" placeholder="roll_no@iitr.ac.in" id="email-input">
+<body class="text-slate-900 min-h-screen">
+  <div class="max-w-[1500px] mx-auto p-4 lg:p-6">
+    <div class="grid gap-5 xl:grid-cols-[280px_1fr]">
+      <aside class="rounded-[28px] bg-slate-950 text-white shadow-[0_24px_80px_rgba(15,23,42,0.22)] overflow-hidden">
+        <div class="p-6 border-b border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="h-12 w-12 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 grid place-items-center font-bold text-lg">CE</div>
+            <div>
+              <div class="text-xl font-semibold">Campus Events Hub</div>
+              <div class="text-xs text-slate-300">IIT Roorkee</div>
             </div>
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" placeholder="••••••••">
-            </div>
-            <button class="btn-primary" onclick="handleLogin()">Sign In</button>
+          </div>
+          <p class="mt-4 text-sm text-slate-300 leading-6">
+            Discover campus events, explore student clubs, and keep your schedule organized in one place.
+          </p>
         </div>
-    </div>
 
-    <div class="container hidden" id="dashboard">
-        <div class="header-section">
-            <h1>Campus Discovery</h1>
-            <p>Explore high-impact festivals, career conclaves, and sports meets at IIT Roorkee.</p>
+        <div class="p-4 space-y-2">
+          <button class="navbtn w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-left bg-white text-slate-950" data-screen="home">
+            <span>⌂</span><span class="font-medium">Home</span>
+          </button>
+          <button class="navbtn w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-left bg-white/5 text-slate-300 hover:bg-white/10" data-screen="events">
+            <span>☰</span><span class="font-medium">Events List</span>
+          </button>
+          <button class="navbtn w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-left bg-white/5 text-slate-300 hover:bg-white/10" data-screen="clubs">
+            <span>◌</span><span class="font-medium">Clubs Directory</span>
+          </button>
+          <button class="navbtn w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-left bg-white/5 text-slate-300 hover:bg-white/10" data-screen="my">
+            <span>✓</span><span class="font-medium">My Events</span>
+          </button>
+          <button class="navbtn w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-left bg-white/5 text-slate-300 hover:bg-white/10" data-screen="add">
+            <span>+</span><span class="font-medium">Add Event</span>
+          </button>
         </div>
-        <div class="event-grid" id="event-list">
-            </div>
-    </div>
 
-    <div class="container hidden" id="event-view">
-        <div class="back-btn" onclick="showScreen('dashboard')">← Back to Dashboard</div>
-        <div class="details-layout">
-            <div class="main-info">
-                <div class="tag" id="detail-tag"></div>
-                <h1 id="detail-title" style="font-size: 3rem; margin: 0.5rem 0;"></h1>
-                <p id="detail-desc" style="font-size: 1.1rem; line-height: 1.6; color: var(--text-dim);"></p>
-                
-                <div style="margin-top: 2rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div style="background: #1e293b; padding: 1rem; border-radius: 8px;">
-                        <div style="font-size: 0.8rem; color: var(--primary)">DATE</div>
-                        <div id="detail-date" style="font-weight: 600"></div>
+        <div class="p-4">
+          <div class="rounded-[24px] bg-gradient-to-br from-sky-500 to-blue-700 p-5 shadow-lg">
+            <div class="text-sm text-white/90">Campus activity</div>
+            <div class="mt-2 text-3xl font-semibold">Connected</div>
+            <p class="mt-2 text-sm text-white/85 leading-6">Browse, save, and join campus activities with a clean mobile-style interface.</p>
+          </div>
+        </div>
+      </aside>
+
+      <main class="space-y-5">
+        <section class="rounded-[30px] bg-white/80 glass border border-white shadow-[0_20px_60px_rgba(15,23,42,0.08)] p-5 lg:p-6">
+          <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <div class="inline-flex items-center gap-2 rounded-full bg-sky-50 text-sky-700 px-4 py-2 text-sm font-medium">
+                IIT Roorkee student life platform
+              </div>
+              <h1 class="mt-4 text-3xl lg:text-4xl font-semibold tracking-tight">Campus Events Hub</h1>
+              <p class="mt-3 max-w-2xl text-slate-600 leading-7">
+                A polished campus web app for discovering events, exploring clubs, viewing RSVPs, and adding new activities.
+              </p>
+            </div>
+            <div class="flex gap-3 flex-wrap">
+              <button id="gotoHome" class="rounded-2xl bg-slate-900 text-white px-5 py-3 font-medium shadow">Open Homepage</button>
+              <button id="gotoAdd" class="rounded-2xl bg-sky-100 text-sky-700 px-5 py-3 font-medium">Add Event</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
+          <div class="rounded-[30px] bg-white border border-slate-200 shadow-[0_20px_60px_rgba(15,23,42,0.08)] p-5 lg:p-6">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 class="text-2xl font-semibold">Campus flow navigator</h2>
+                <p class="text-sm text-slate-500 mt-1">Switch between the main sections used in the platform.</p>
+              </div>
+              <div class="flex items-center gap-2 rounded-2xl bg-slate-100 px-3 py-2 text-sm text-slate-600">
+                <span>⌕</span>
+                <input id="search" value="" placeholder="Search events or clubs" class="bg-transparent outline-none w-40 sm:w-64" />
+              </div>
+            </div>
+
+            <div class="mt-5 flex flex-wrap gap-2" id="chips"></div>
+            <div class="mt-6 grid gap-4 md:grid-cols-2 2xl:grid-cols-3" id="eventGrid"></div>
+          </div>
+
+          <div class="rounded-[30px] bg-slate-950 text-white shadow-[0_20px_60px_rgba(15,23,42,0.18)] p-4 lg:p-5 overflow-hidden">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <div class="text-sm text-slate-400">Selected screen</div>
+                <div class="text-2xl font-semibold capitalize" id="currentScreenLabel">Home</div>
+              </div>
+              <div class="rounded-2xl bg-white/10 px-3 py-2 text-sm" id="resultCount">0 results</div>
+            </div>
+
+            <div class="flex items-center gap-2 flex-wrap" id="quickNav"></div>
+
+            <div class="mt-5">
+              <div id="home" class="screen active">
+                <div class="rounded-[26px] bg-white text-slate-900 p-5">
+                  <div class="text-sm text-slate-500">Home</div>
+                  <div class="mt-2 text-2xl font-semibold">IIT Roorkee Clubs & Events</div>
+                  <p class="mt-3 text-slate-600 leading-7">
+                    Use the navigation to browse upcoming events, explore student clubs, and view your saved activities.
+                  </p>
+                  <div class="mt-5 rounded-[24px] bg-slate-950 text-white p-5">
+                    <div class="text-sm text-slate-300">Primary actions</div>
+                    <div class="mt-4 grid gap-3">
+                      <button class="rounded-2xl bg-sky-500 px-4 py-3 font-medium" data-jump="events">Browse Events</button>
+                      <button class="rounded-2xl bg-white/10 px-4 py-3 font-medium" data-jump="clubs">Explore Clubs</button>
+                      <button class="rounded-2xl bg-white/10 px-4 py-3 font-medium" data-jump="my">My Events</button>
                     </div>
-                    <div style="background: #1e293b; padding: 1rem; border-radius: 8px;">
-                        <div style="font-size: 0.8rem; color: var(--primary)">VENUE</div>
-                        <div id="detail-venue" style="font-weight: 600"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="events" class="screen">
+                <div class="space-y-3" id="eventsList"></div>
+              </div>
+
+              <div id="details" class="screen">
+                <div class="rounded-[26px] bg-white text-slate-900 p-5">
+                  <button class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900" data-jump="events">← Back to events</button>
+                  <div id="detailsHero" class="mt-4 h-36 rounded-[28px] p-5 text-white flex flex-col justify-end bg-gradient-to-br from-sky-500 to-blue-600">
+                    <div class="text-xs opacity-90" id="detailsCategory">Workshop</div>
+                    <div class="text-2xl font-semibold leading-tight" id="detailsTitle">Title</div>
+                    <div class="mt-1 text-sm opacity-90" id="detailsClub">Club</div>
+                  </div>
+                  <div class="mt-5 grid gap-3 text-sm text-slate-600">
+                    <div id="detailsDate">Date</div>
+                    <div id="detailsVenue">Venue</div>
+                  </div>
+                  <p class="mt-4 text-slate-600 leading-7" id="detailsDesc"></p>
+                  <div class="mt-5 flex gap-3">
+                    <button id="rsvpBtn" class="flex-1 rounded-2xl bg-sky-600 text-white py-3 font-semibold">RSVP Event</button>
+                    <button class="rounded-2xl bg-slate-100 px-5 py-3 font-semibold text-slate-700" data-jump="my">View My Events</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="clubs" class="screen">
+                <div class="space-y-3" id="clubList"></div>
+              </div>
+
+              <div id="club" class="screen">
+                <div class="rounded-[26px] bg-white text-slate-900 p-5">
+                  <button class="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-900" data-jump="clubs">← Back to clubs</button>
+                  <div class="mt-4 rounded-[28px] bg-gradient-to-br from-sky-500 to-blue-600 p-5 text-white">
+                    <div class="text-sm opacity-90">Club details</div>
+                    <div class="mt-1 text-3xl font-semibold" id="clubTitle">Marketing Club</div>
+                    <div class="mt-4 space-y-2 text-white/90" id="clubBullets"></div>
+                  </div>
+                  <div class="mt-5 rounded-[24px] bg-slate-50 p-4 text-sm text-slate-600 leading-7">
+                    Build skills, meet peers, and take part in activities that connect learning with campus life.
+                  </div>
+                  <button id="joinBtn" class="mt-5 w-full rounded-2xl bg-sky-600 text-white py-3 font-semibold">Join Club</button>
+                </div>
+              </div>
+
+              <div id="my" class="screen">
+                <div class="rounded-[26px] bg-white text-slate-900 p-5">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-sm text-slate-500">Saved activities</div>
+                      <div class="text-2xl font-semibold">My Events</div>
                     </div>
+                    <div class="rounded-full bg-slate-100 px-3 py-2 text-sm text-slate-600" id="myCount">0 items</div>
+                  </div>
+                  <div class="mt-5 space-y-3" id="myEvents"></div>
                 </div>
-            </div>
+              </div>
 
-            <div class="seat-section">
-                <h3 style="margin-top: 0;">Reserve Your Seat</h3>
-                <p style="font-size: 0.9rem; color: var(--text-dim);">Live Vacancy: <span id="vacancy-percent" style="color: var(--success); font-weight: 700;"></span></p>
-                
-                <div class="seat-grid" id="seat-map"></div>
+              <div id="add" class="screen">
+                <div class="rounded-[26px] bg-white text-slate-900 p-5">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-sm text-slate-500">Organizer flow</div>
+                      <div class="text-2xl font-semibold">Add Event</div>
+                    </div>
+                    <button id="toggleForm" class="rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold">Open form</button>
+                  </div>
 
-                <div class="legend">
-                    <div class="legend-item"><div class="dot" style="background: #334155"></div> Available</div>
-                    <div class="legend-item"><div class="dot" style="background: #0f172a"></div> Occupied</div>
-                    <div class="legend-item"><div class="dot" style="background: var(--primary)"></div> Selected</div>
+                  <div id="mockPreview" class="mt-5 rounded-[24px] bg-slate-950 text-white p-5">
+                    <div class="text-sm text-slate-300">Form preview</div>
+                    <p class="mt-2 text-sm leading-7 text-slate-200">
+                      This organizer screen supports adding a new event to the events list without leaving the webpage.
+                    </p>
+                  </div>
+
+                  <form id="eventForm" class="mt-5 grid gap-3 hidden">
+                    <input id="fTitle" required placeholder="Event title" class="rounded-2xl border border-slate-200 px-4 py-3 outline-none" />
+                    <div class="grid grid-cols-2 gap-3">
+                      <input id="fClub" placeholder="Club name" value="Marketing Club" class="rounded-2xl border border-slate-200 px-4 py-3 outline-none" />
+                      <select id="fCategory" class="rounded-2xl border border-slate-200 px-4 py-3 outline-none bg-white">
+                        <option>Workshop</option>
+                        <option>Competition</option>
+                        <option>Pitch</option>
+                        <option>Talk</option>
+                        <option>Festival</option>
+                        <option>Sports</option>
+                      </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                      <input id="fDate" required placeholder="Date" class="rounded-2xl border border-slate-200 px-4 py-3 outline-none" />
+                      <input id="fTime" required placeholder="Time" class="rounded-2xl border border-slate-200 px-4 py-3 outline-none" />
+                    </div>
+                    <input id="fVenue" required placeholder="Venue" class="rounded-2xl border border-slate-200 px-4 py-3 outline-none" />
+                    <textarea id="fDesc" rows="4" placeholder="Description" class="rounded-2xl border border-slate-200 px-4 py-3 outline-none resize-none"></textarea>
+                    <button type="submit" class="rounded-2xl bg-sky-600 text-white py-3 font-semibold">Submit Event</button>
+                  </form>
                 </div>
-
-                <button class="btn-primary" onclick="confirmRSVP()">Confirm Participation</button>
+              </div>
             </div>
-        </div>
+          </div>
+        </section>
+
+      </main>
     </div>
+  </div>
 
-    <script>
-        const events =;
+  <script>
+    const initialEvents = [
+      { id: 1, title: "Consulting Case Workshop", club: "Marketing Club", category: "Workshop", date: "10 May 2026", time: "9:00 AM", venue: "APJ 105", desc: "Learn how to structure cases, ask better questions, and present crisp business recommendations.", accent: "from-sky-500 to-blue-600" },
+      { id: 2, title: "Marketing Case Challenge", club: "Marketing Club", category: "Competition", date: "10 May 2026", time: "10:00 AM", venue: "APJ 105", desc: "A live competition focused on brand strategy, market entry, and creative pitching.", accent: "from-indigo-500 to-blue-600" },
+      { id: 3, title: "Startup Pitch Night", club: "Entrepreneurship Cell", category: "Pitch", date: "12 May 2026", time: "6:00 PM", venue: "Lecture Hall 2", desc: "Pitch your startup idea in front of mentors and campus founders.", accent: "from-violet-500 to-fuchsia-600" },
+      { id: 4, title: "Finance Speaker Session", club: "Finance Club", category: "Talk", date: "14 May 2026", time: "4:30 PM", venue: "Seminar Hall", desc: "An industry talk on investing basics, markets, and career paths in finance.", accent: "from-emerald-500 to-teal-600" },
+      { id: 5, title: "Exuberance", club: "Cultural Committee", category: "Festival", date: "18 May 2026", time: "7:00 PM", venue: "Main Auditorium", desc: "A vibrant celebration with performances, stalls, and inter-club showcases.", accent: "from-amber-500 to-orange-600" },
+      { id: 6, title: "Comet", club: "Sports Committee", category: "Sports", date: "20 May 2026", time: "5:00 PM", venue: "Sports Ground", desc: "Campus sports day featuring tournaments, relay races, and team challenges.", accent: "from-rose-500 to-red-600" },
+    ];
 
-        let selectedEvent = null;
+    const clubs = [
+      { id: 1, name: "Marketing Club", subtitle: "Industry speaker sessions · Case competitions · Brand projects", bullets: ["Industry speaker sessions", "Case competitions", "Live brand projects", "Alumni mentorship", "Inter-college competitions"] },
+      { id: 2, name: "Entrepreneurship Cell", subtitle: "Pitch nights · Startup mentor sessions · Founder talks", bullets: ["Pitch nights", "Startup mentor sessions", "Founder talks", "Idea validation"] },
+      { id: 3, name: "Finance Club", subtitle: "Markets · Investing workshops · Case study competitions", bullets: ["Markets", "Investing workshops", "Case study competitions", "Portfolio reviews"] },
+      { id: 4, name: "Sports Committee", subtitle: "Tournaments · Trials · Team events", bullets: ["Tournaments", "Trials", "Team events", "Fitness challenges"] }
+    ];
 
-        function showScreen(screenId) {
-            document.querySelectorAll('.container').forEach(c => c.classList.add('hidden'));
-            document.getElementById(screenId).classList.remove('hidden');
-            window.scrollTo(0,0);
+    const categories = ["All", "Workshop", "Competition", "Pitch", "Talk", "Festival", "Sports"];
+    let activeScreen = "home";
+    let selectedCategory = "All";
+    let selectedEventId = initialEvents[0].id;
+    let events = [...initialEvents];
+    let search = "";
+    let joinedClubs = new Set([1]);
+    let rsvpedEvents = new Set([2]);
+    let myEvents = [{ id: 2, title: "Marketing Case Challenge", time: "10 May 2026 · 10:00 AM", type: "RSVP confirmed" }];
+    let showForm = false;
+
+    const screenLabel = (s) => s === "home" ? "Home" : s === "details" ? "Event Details" : s === "clubs" ? "Clubs Directory" : s === "club" ? "Club Details" : s === "my" ? "My Events" : s === "add" ? "Add Event" : "Events List";
+
+    function setScreen(screen) {
+      activeScreen = screen;
+      document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+      document.getElementById(screen).classList.add("active");
+      document.getElementById("currentScreenLabel").textContent = screenLabel(screen);
+      document.querySelectorAll(".navbtn").forEach(btn => {
+        const isActive = btn.dataset.screen === screen || (btn.dataset.screen === "events" && screen === "details") || (btn.dataset.screen === "clubs" && screen === "club");
+        btn.classList.toggle("active", isActive);
+        if (isActive) {
+          btn.classList.remove("bg-white/5", "text-slate-300", "hover:bg-white/10");
+          btn.classList.add("bg-white", "text-slate-950");
+        } else {
+          btn.classList.add("bg-white/5", "text-slate-300", "hover:bg-white/10");
+          btn.classList.remove("bg-white", "text-slate-950");
         }
+      });
+      renderQuickNav();
+      render();
+    }
 
-        function handleLogin() {
-            const email = document.getElementById('email-input').value;
-            if (email.includes('@')) {
-                showScreen('dashboard');
-                document.getElementById('nav-actions').classList.remove('hidden');
-                renderEvents();
-            } else {
-                alert("Please use a valid institutional email.");
-            }
-        }
+    function renderChips() {
+      const root = document.getElementById("chips");
+      root.innerHTML = categories.map(cat => `
+        <button class="chip rounded-full px-4 py-2 text-sm font-medium ${selectedCategory === cat ? "active" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}" data-cat="${cat}">
+          ${cat}
+        </button>
+      `).join("");
+      root.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedCategory = btn.dataset.cat;
+          renderChips();
+          render();
+        });
+      });
+    }
 
-        function renderEvents() {
-            const list = document.getElementById('event-list');
-            list.innerHTML = events.map(e => `
-                <div class="event-card" onclick="viewEvent(${e.id})">
-                    <div class="card-img">${e.icon}</div>
-                    <div class="card-content">
-                        <span class="tag">${e.tag}</span>
-                        <div class="card-title">${e.title}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-dim)">${e.venue}</div>
-                        <div class="card-meta">
-                            <span>${e.date}</span>
-                            <span class="vacancy-badge">${Math.floor(Math.random() * 40 + 10)}% Available</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
+    function filteredEvents() {
+      const q = search.trim().toLowerCase();
+      return events.filter(e => {
+        const matchesCategory = selectedCategory === "All" || e.category === selectedCategory;
+        const matchesSearch = !q || [e.title, e.club, e.category, e.venue].some(v => v.toLowerCase().includes(q));
+        return matchesCategory && matchesSearch;
+      });
+    }
 
-        function viewEvent(id) {
-            selectedEvent = events.find(e => e.id === id);
-            showScreen('event-view');
-            document.getElementById('detail-tag').innerText = selectedEvent.tag;
-            document.getElementById('detail-title').innerText = selectedEvent.title;
-            document.getElementById('detail-desc').innerText = selectedEvent.desc;
-            document.getElementById('detail-date').innerText = selectedEvent.date;
-            document.getElementById('detail-venue').innerText = selectedEvent.venue;
-            renderSeats();
-        }
+    function eventCard(event) {
+      return `
+        <button class="card text-left rounded-[24px] border border-slate-200 p-4 shadow-sm hover:border-sky-400" data-open-event="${event.id}">
+          <div class="h-28 rounded-[20px] bg-gradient-to-br ${event.accent} p-4 text-white flex flex-col justify-between">
+            <div class="text-xs font-medium opacity-90">${event.category}</div>
+            <div>
+              <div class="text-base font-semibold leading-5">${event.title}</div>
+              <div class="text-[11px] opacity-90 mt-1">${event.club}</div>
+            </div>
+          </div>
+          <div class="mt-4 space-y-2 text-sm text-slate-600">
+            <div>📍 ${event.venue}</div>
+            <div>🕒 ${event.date} · ${event.time}</div>
+          </div>
+        </button>
+      `;
+    }
 
-        function renderSeats() {
-            const map = document.getElementById('seat-map');
-            map.innerHTML = '';
-            for (let i = 0; i < 50; i++) {
-                const seat = document.createElement('div');
-                const isOccupied = Math.random() > 0.7;
-                seat.className = `seat ${isOccupied? 'occupied' : 'available'}`;
-                if (!isOccupied) {
-                    seat.onclick = function() {
-                        this.classList.toggle('selected');
-                        updateVacancy();
-                    };
-                }
-                map.appendChild(seat);
-            }
-            updateVacancy();
-        }
+    function render() {
+      const list = filteredEvents();
+      document.getElementById("resultCount").textContent = `${list.length} results`;
 
-        function updateVacancy() {
-            const total = 50;
-            const taken = document.querySelectorAll('.seat.occupied').length;
-            const currentSelected = document.querySelectorAll('.seat.selected').length;
-            const vacancy = (((total - (taken + currentSelected)) / total) * 100).toFixed(1);
-            document.getElementById('vacancy-percent').innerText = vacancy + "%";
-        }
+      const eventGrid = document.getElementById("eventGrid");
+      eventGrid.innerHTML = list.map(eventCard).join("");
 
-        function confirmRSVP() {
-            const count = document.querySelectorAll('.seat.selected').length;
-            if (count > 0) {
-                alert(`RSVP Confirmed for ${selectedEvent.title}!\nYour digital pass has been sent to your IITR Email.`);
-                showScreen('dashboard');
-            } else {
-                alert("Please select at least one seat to confirm registration.");
-            }
+      document.querySelectorAll("[data-open-event]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedEventId = Number(btn.dataset.openEvent);
+          const event = events.find(x => x.id === selectedEventId);
+          document.getElementById("detailsTitle").textContent = event.title;
+          document.getElementById("detailsClub").textContent = event.club;
+          document.getElementById("detailsCategory").textContent = event.category;
+          document.getElementById("detailsDate").textContent = `${event.date} · ${event.time}`;
+          document.getElementById("detailsVenue").textContent = `Venue: ${event.venue}`;
+          document.getElementById("detailsDesc").textContent = event.desc;
+          document.getElementById("detailsHero").className = `mt-4 h-36 rounded-[28px] p-5 text-white flex flex-col justify-end bg-gradient-to-br ${event.accent}`;
+          setScreen("details");
+        });
+      });
+
+      const eventList = document.getElementById("eventsList");
+      eventList.innerHTML = list.map(e => `
+        <button class="w-full rounded-[24px] bg-white text-slate-900 p-4 text-left flex items-center gap-4 border border-slate-200 hover:shadow-md transition card" data-open-event="${e.id}">
+          <div class="h-16 w-16 shrink-0 rounded-2xl bg-gradient-to-br ${e.accent}"></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <div class="font-semibold truncate">${e.title}</div>
+                <div class="text-sm text-slate-500 mt-1">${e.club} · ${e.category}</div>
+              </div>
+              <div class="text-slate-400">›</div>
+            </div>
+            <div class="mt-2 text-xs text-slate-500 flex flex-wrap gap-x-4 gap-y-1">
+              <span>${e.date}</span><span>${e.time}</span><span>${e.venue}</span>
+            </div>
+          </div>
+        </button>
+      `).join("");
+
+      document.querySelectorAll("#eventsList [data-open-event]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedEventId = Number(btn.dataset.openEvent);
+          const event = events.find(x => x.id === selectedEventId);
+          document.getElementById("detailsTitle").textContent = event.title;
+          document.getElementById("detailsClub").textContent = event.club;
+          document.getElementById("detailsCategory").textContent = event.category;
+          document.getElementById("detailsDate").textContent = `${event.date} · ${event.time}`;
+          document.getElementById("detailsVenue").textContent = `Venue: ${event.venue}`;
+          document.getElementById("detailsDesc").textContent = event.desc;
+          document.getElementById("detailsHero").className = `mt-4 h-36 rounded-[28px] p-5 text-white flex flex-col justify-end bg-gradient-to-br ${event.accent}`;
+          setScreen("details");
+        });
+      });
+
+      const clubList = document.getElementById("clubList");
+      clubList.innerHTML = clubs.map(club => {
+        const joined = joinedClubs.has(club.id);
+        return `
+          <button class="w-full rounded-[24px] bg-white text-slate-900 p-4 border border-slate-200 flex items-center gap-4 hover:shadow-md transition card" data-open-club="${club.id}">
+            <div class="h-16 w-16 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600"></div>
+            <div class="flex-1 text-left min-w-0">
+              <div class="font-semibold">${club.name}</div>
+              <div class="text-sm text-slate-500 mt-1 truncate">${club.subtitle}</div>
+            </div>
+            <div class="rounded-full px-3 py-2 text-xs font-semibold ${joined ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"}">${joined ? "Joined" : "Open"}</div>
+          </button>
+        `;
+      }).join("");
+
+      document.querySelectorAll("[data-open-club]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const club = clubs.find(c => c.id === Number(btn.dataset.openClub));
+          document.getElementById("clubTitle").textContent = club.name;
+          document.getElementById("clubBullets").innerHTML = club.bullets.map(x => `<div>${x}</div>`).join("");
+          document.getElementById("joinBtn").textContent = joinedClubs.has(club.id) ? "Joined Club" : "Join Club";
+          document.getElementById("joinBtn").onclick = () => {
+            joinedClubs.add(club.id);
+            document.getElementById("joinBtn").textContent = "Joined Club";
+            render();
+            setScreen("club");
+          };
+          setScreen("club");
+        });
+      });
+
+      document.getElementById("myCount").textContent = `${myEvents.length} items`;
+      document.getElementById("myEvents").innerHTML = myEvents.map(item => `
+        <div class="rounded-[20px] border border-slate-200 p-4">
+          <div class="font-semibold">${item.title}</div>
+          <div class="text-sm text-slate-500 mt-1">${item.time}</div>
+          <div class="mt-2 text-xs inline-flex rounded-full bg-emerald-100 text-emerald-700 px-2 py-1">${item.type}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("rsvpBtn").onclick = () => {
+        const event = events.find(x => x.id === selectedEventId);
+        if (!rsvpedEvents.has(event.id)) {
+          rsvpedEvents.add(event.id);
+          myEvents.unshift({ id: event.id, title: event.title, time: `${event.date} · ${event.time}`, type: "RSVP confirmed" });
         }
-    </script>
+        render();
+        setScreen("my");
+      };
+    }
+
+    function renderQuickNav() {
+      const quickNav = document.getElementById("quickNav");
+      const labels = ["home","events","clubs","my","add"];
+      quickNav.innerHTML = labels.map(s => `
+        <button class="rounded-full px-3 py-2 text-sm transition ${activeScreen === s || (s === "events" && activeScreen === "details") || (s === "clubs" && activeScreen === "club") ? "bg-white text-slate-950" : "bg-white/10 text-white/75 hover:bg-white/15"}" data-jump="${s}">
+          ${s === "home" ? "Home" : s === "events" ? "Events" : s === "clubs" ? "Clubs" : s === "my" ? "My Events" : "Add Event"}
+        </button>
+      `).join("");
+      quickNav.querySelectorAll("[data-jump]").forEach(btn => btn.addEventListener("click", () => setScreen(btn.dataset.jump)));
+    }
+
+    document.querySelectorAll("[data-screen]").forEach(btn => btn.addEventListener("click", () => setScreen(btn.dataset.screen)));
+    document.querySelectorAll("[data-jump]").forEach(btn => btn.addEventListener("click", () => setScreen(btn.dataset.jump)));
+    document.getElementById("gotoHome").addEventListener("click", () => setScreen("home"));
+    document.getElementById("gotoAdd").addEventListener("click", () => setScreen("add"));
+    document.getElementById("search").addEventListener("input", (e) => { search = e.target.value; render(); });
+    document.getElementById("toggleForm").addEventListener("click", () => {
+      showForm = !showForm;
+      document.getElementById("eventForm").classList.toggle("hidden", !showForm);
+      document.getElementById("mockPreview").classList.toggle("hidden", showForm);
+      document.getElementById("toggleForm").textContent = showForm ? "Hide form" : "Open form";
+    });
+    document.getElementById("eventForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const newEvent = {
+        id: Date.now(),
+        title: document.getElementById("fTitle").value,
+        club: document.getElementById("fClub").value,
+        category: document.getElementById("fCategory").value,
+        date: document.getElementById("fDate").value,
+        time: document.getElementById("fTime").value,
+        venue: document.getElementById("fVenue").value,
+        desc: document.getElementById("fDesc").value || "New event added through the organizer form.",
+        accent: "from-cyan-500 to-blue-600",
+      };
+      events.unshift(newEvent);
+      selectedEventId = newEvent.id;
+      document.getElementById("detailsTitle").textContent = newEvent.title;
+      document.getElementById("detailsClub").textContent = newEvent.club;
+      document.getElementById("detailsCategory").textContent = newEvent.category;
+      document.getElementById("detailsDate").textContent = `${newEvent.date} · ${newEvent.time}`;
+      document.getElementById("detailsVenue").textContent = `Venue: ${newEvent.venue}`;
+      document.getElementById("detailsDesc").textContent = newEvent.desc;
+      document.getElementById("detailsHero").className = `mt-4 h-36 rounded-[28px] p-5 text-white flex flex-col justify-end bg-gradient-to-br ${newEvent.accent}`;
+      renderChips();
+      render();
+      setScreen("events");
+      e.target.reset();
+      document.getElementById("fClub").value = "Marketing Club";
+      document.getElementById("fCategory").value = "Workshop";
+    });
+
+    renderChips();
+    renderQuickNav();
+    render();
+    setScreen("home");
+  </script>
 </body>
 </html>
